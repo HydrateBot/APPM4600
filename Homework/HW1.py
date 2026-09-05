@@ -25,8 +25,11 @@ delta = np.logspace(-16, 0, 17)
 for c in x2:
     oExpr = np.cos(c + delta) - np.cos(c)
     sExpr = -2 * np.sin(c + delta / 2) * np.sin(delta / 2)
+    myExpr = -delta * np.sin(c)
     diff = np.abs(oExpr - sExpr)
-    plt.plot(delta, diff)
+    diff2 = np.abs(myExpr - sExpr)
+    #plt.plot(delta, diff)
+    plt.plot(delta, diff2)
 
 plt.xscale('log')
 plt.yscale('log')
@@ -34,6 +37,8 @@ plt.xlabel('delta (log scale)')
 plt.ylabel('Absolute Difference')
 plt.legend()
 plt.show()
+
+
 
 
 
