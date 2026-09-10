@@ -1,13 +1,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def fixed_point_iteration(g, p0, N):
+def fixed_point_iteration(g, p0, tol, N):
     
-    x = np.zeros((N, 1))
-    
-    x[0, 0] = p0
-    
-    for i in range(1, N):
-        x[i, 0] = g(x[i-1, 0])
+    count  = 0
+    while(count < N):
+        count = count + 1
+        p1 = g(p0)
+        if(abs(p1 - p0) < tol):
+            xstar = p1
+            ier = 0
+            return [xstar, ier]
+        p0 = p1
+    xstar = p1
+    ier = 1
+    return [xstar, ier]
         
     return x
