@@ -36,7 +36,7 @@ def driver():
 #    a = 0.1
 #    b = np.pi+0.1
 
-    tol = 1e-11
+    tol = 1e-9
 
     [astar,ier] = bisection(f,a,b,tol)
     print('the approximate root is',astar)
