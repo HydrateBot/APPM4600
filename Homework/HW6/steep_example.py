@@ -38,13 +38,14 @@ from numpy.linalg import norm
 def driver():
 
     Nmax = 100
-    x0= np.array([0,0,1])
+    x0= np.array([-5,5,5])
     tol = 1e-6
     
-    [xstar,gval,ier] = SteepestDescent(x0,tol,Nmax)
+    [xstar,gval,ier,its] = SteepestDescent(x0,tol,Nmax)
     print("the steepest descent code found the solution ",xstar)
     print("g evaluated at this point is ", gval)
     print("ier is ", ier	)
+    print("Steepest Descent number of iterations is ", its)
 
 ###########################################################
 #functions:
@@ -52,17 +53,17 @@ def evalF(x):
 # vector valued function you are trying to find the root of 
 
     F = np.zeros(3)
-    F[0] = x[0] +math.cos(x[0]*x[1]*x[2])-1.
-    F[1] = (1.-x[0])**(0.25) + x[1] +0.05*x[2]**2 -0.15*x[2]-1
-    F[2] = -x[0]**2-0.1*x[1]**2 +0.01*x[1]+x[2] -1
+    F[0] = x[0] + np.cos(x[0]*x[1]*x[2]) - 1
+    F[1] = (1-x[0])**(1/4) + x[1] + 0.05*x[2] - 0.15*x[2] - 1
+    F[2] = -1*x[0]**2 - 0.1*x[1]**2 + 0.01*x[1] + x[2] - 1
     return F
 
 def evalJ(x): 
 # Jacobian of the vector valued function you are trying to find the root of.
 
-    J =np.array([[1.+x[1]*x[2]*math.sin(x[0]*x[1]*x[2]),x[0]*x[2]*math.sin(x[0]*x[1]*x[2]),x[1]*x[0]*math.sin(x[0]*x[1]*x[2])],
-          [-0.25*(1-x[0])**(-0.75),1,0.1*x[2]-0.15],
-          [-2*x[0],-0.2*x[1]+0.01,1]])
+    J = np.array([[1 - x[1]*x[2]*np.sin(x[0]*x[1]*x[2]), -x[0]*x[2]*np.sin(x[0]*x[1]*x[2]), -x[0]*x[1]*np.sin(x[0]*x[1]*x[2])],
+            [-(1/4)*(1-x[0])**(-3/4), 1, 0.05 - 0.15],
+            [-2*x[0], -0.2*x[1] + 0.01, 1]])
     return J
 
 def evalg(x):
@@ -133,11 +134,11 @@ def SteepestDescent(x,tol,Nmax):
 
         if abs(gval - g1)<tol:
             ier = 0
-            return [x,gval,ier]
+            return [x,gval,ier,its]
 
     print('max iterations exceeded')    
     ier = 1        
-    return [x,g1,ier]
+    return [x,g1,ier,its]
 
 
 

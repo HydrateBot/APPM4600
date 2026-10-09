@@ -6,10 +6,10 @@ from numpy.linalg import norm
 
 def driver():
 
-    x0 = np.array([-0.5, 0.25])
+    x0 = np.array([-5, 5, 5])
     
     Nmax = 100
-    tol = 1e-4
+    tol = 1e-6
     
     t = time.time()
     for j in range(50):
@@ -22,18 +22,20 @@ def driver():
 
 def evalF(x): 
 
-    F = np.zeros(2)
+    F = np.zeros(3)
     
-    F[0] = 3*x[0]**2 + 4*x[1]**2 - 1
-    F[1] = x[1]**3 - 8*x[0]**3 - 1
+    F[0] = x[0] + np.cos(x[0]*x[1]*x[2]) - 1
+    F[1] = (1-x[0])**(1/4) + x[1] + 0.05*x[2] - 0.15*x[2] - 1
+    F[2] = -1*x[0]**2 - 0.1*x[1]**2 + 0.01*x[1] + x[2] - 1
  
     return F
     
 def evalJ(x): 
 
     
-    J = np.array([[6*x[0], 8*x[1]], 
-        [-24*x[0]**2, 3*x[1]**2]])
+    J = np.array([[1 - x[1]*x[2]*np.sin(x[0]*x[1]*x[2]), -x[0]*x[2]*np.sin(x[0]*x[1]*x[2]), -x[0]*x[1]*np.sin(x[0]*x[1]*x[2])],
+        [-(1/4)*(1-x[0])**(-3/4), 1, 0.05 - 0.15],
+        [-2*x[0], -0.2*x[1] + 0.01, 1]])
 
     
     return J
