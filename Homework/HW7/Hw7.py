@@ -49,15 +49,34 @@ def interpolateBC(N, x_val):
     w = barycentricWeights(N)
     p_eval = barycentricEval(x, y, w, x_val)
     return x, y, p_eval
+
+def chebyshevWeights(x):
+    N = len(x)
+    w = np.zeros(N)
     
-x_grid = np.linspace(-0.2, 0.2, 1001)
+    for j in range(N):
+        product = 1
+        for i in range(N):
+            if i != j:
+                product *= (x[j] - x[i])
+        w[j] = 1 / product
+    return w
+
+def interpolateChebyshev(N, x_val):
+    j = np.arange(1, N+1)
+    x = np.cos((2*j - 1) * np.pi / (2*N))
+    y = f(x)
+    w = chebyshevWeights(x)
+    p_eval = barycentricEval(x, y, w, x_val)
+    return x, y, p_eval
+
+x_grid = np.linspace(-1, 1, 1001)
 y_grid = f(x_grid)
 
+#For problem 3
 
-#For problem 2
-
-for N in [5, 15, 20, 50]:
-    x, y, p_eval = interpolateBC(N, x_grid)
+for N in [5, 15, 20, 50, 2000]:
+    x, y, p_eval = interpolateChebyshev(N, x_grid)
     
     plt.plot(x_grid, y_grid, label='f(x)')
     plt.plot(x_grid, p_eval, label=f'P_{N-1}(x)')
@@ -66,8 +85,24 @@ for N in [5, 15, 20, 50]:
     plt.ylabel('y')
     plt.legend()
     plt.grid(True)
-    plt.title(f'Barycentric Interpolation with N={N}')
+    plt.title(f'Chebyshev Interpolation with N={N}')
     plt.show()
+
+
+#For problem 2
+
+# for N in [5, 15, 20, 50]:
+#     x, y, p_eval = interpolateBC(N, x_grid)
+    
+#     plt.plot(x_grid, y_grid, label='f(x)')
+#     plt.plot(x_grid, p_eval, label=f'P_{N-1}(x)')
+#     plt.plot(x, y, 'o', label='Interpolation Points')
+#     plt.xlabel('x')
+#     plt.ylabel('y')
+#     plt.legend()
+#     plt.grid(True)
+#     plt.title(f'Barycentric Interpolation with N={N}')
+#     plt.show()
 
 
 # For problem 1
