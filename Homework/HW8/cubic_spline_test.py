@@ -39,10 +39,10 @@ from numpy.linalg import norm
 def driver():
 
 # example 1    
-    f = lambda x: np.exp(x)
-    fp = lambda x: np.exp(x)
-    a = 0
-    b = 1
+    f = lambda x: 1 / (1 + x**2)
+    fp = lambda x: -2*x/(1+x**2)**2
+    a = -5
+    b = 5
 
 # example 2
 #    f = lambda x: 1/(1 +(5*x)**2)
@@ -52,58 +52,58 @@ def driver():
     
     
     ''' number of intervals'''
-    Nint = 10
-    xint2 = np.linspace(a,b,Nint+1)
-# create chebychev nodes
-#    xint = np.zeros(Nint+1)
-#    for j in range(1,Nint+2):
-#       xint[j-1] = np.cos(np.pi*(2*j-1)/(2*(Nint+1)))
-# scale  for the interval
-#    m = (b-a)/2 
-#    c = (a+b)/2
-#    xint = m*xint+c
-#    xint = xint[::-1]
-    xint = xint2
-    yint = f(xint)
-    yint2 = f(xint2)
-    yp_b = np.zeros(2)
-    yp_b[0] = fp(xint[0])
-    yp_b[1] = fp(xint[Nint])
-    
-    ''' create points you want to evaluate at'''
-    Neval = 100
-    xeval =  np.linspace(xint[0],xint[Nint],Neval+1)
-    
-    
-    
-    (M,C,D) = create_natural_spline(yint2,xint2,Nint)
-    (Mc,Cc,Dc) = create_clamped_spline(yint,yp_b, xint,Nint)    
-    
-    yeval = eval_cubic_spline(xeval,Neval,xint2,Nint,M,C,D)
-    yevalc = eval_cubic_spline(xeval,Neval,xint,Nint,Mc,Cc,Dc)
-    
-#    print('yeval = ', yevalc)
-    
-    ''' evaluate f at the evaluation points'''
-    fex = f(xeval)
+    N_values = [5, 10, 15, 20]
+    for Nint in N_values:
+        xint2 = np.linspace(a,b,Nint+1)
+    # create chebychev nodes
+        xint = np.zeros(Nint+1)
+        for j in range(1,Nint+2):
+           xint[j-1] = np.cos(np.pi*(2*j-1)/(2*(Nint+1)))
+    # scale  for the interval
+        m = (b-a)/2 
+        c = (a+b)/2
+        xint = m*xint+c
+        xint = xint[::-1]
+        yint = f(xint)
+        yint2 = f(xint2)
+        yp_b = np.zeros(2)
+        yp_b[0] = fp(xint[0])
+        yp_b[1] = fp(xint[Nint])
         
-    nerr = norm(fex-yeval)
-    print('nerr = ', nerr)
-    
-    plt.figure()    
-    plt.plot(xeval,fex,'ro-',label='exact function')
-    plt.plot(xeval,yeval,'bs--',label='natural spline') 
-    plt.plot(xeval,yevalc,'gs--',label='clamped spline') 
-    plt.legend
-    plt.show()
-     
-    err = abs(yeval-fex)
-    errc = abs(yevalc-fex)
-    plt.figure() 
-    plt.semilogy(xeval,err,'ro--',label='natural spline')
-    plt.semilogy(xeval,errc,'bo--',label='clamped spline')
-    plt.legend()
-    plt.show()
+        ''' create points you want to evaluate at'''
+        Neval = 1000
+        xeval =  np.linspace(xint[0],xint[Nint],Neval+1)
+        
+        
+        
+        (M,C,D) = create_natural_spline(yint2,xint2,Nint)
+        (Mc,Cc,Dc) = create_clamped_spline(yint,yp_b, xint,Nint)    
+        
+        yeval = eval_cubic_spline(xeval,Neval,xint2,Nint,M,C,D)
+        yevalc = eval_cubic_spline(xeval,Neval,xint,Nint,Mc,Cc,Dc)
+        
+    #    print('yeval = ', yevalc)
+        
+        ''' evaluate f at the evaluation points'''
+        fex = f(xeval)
+            
+        nerr = norm(fex-yeval)
+        print('nerr = ', nerr)
+        
+        plt.figure()    
+        plt.plot(xeval,fex,'ro-',label='exact function')
+        plt.plot(xeval,yeval,'bs--',label='natural spline') 
+        plt.plot(xeval,yevalc,'gs--',label='clamped spline') 
+        plt.legend()
+        plt.show()
+        
+        err = abs(yeval-fex)
+        errc = abs(yevalc-fex)
+        plt.figure() 
+        plt.semilogy(xeval,err,'ro--',label='natural spline')
+        plt.semilogy(xeval,errc,'bo--',label='clamped spline')
+        plt.legend()
+        plt.show()
     
 def create_natural_spline(yint,xint,N):
 
